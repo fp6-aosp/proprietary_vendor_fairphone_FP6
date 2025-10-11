@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+<module_config
+	name="BUS_HKResOneshotRecPreFrame"
+	type="BUSINESS"/>
+
+<module_config
+	name="MOD_HKResPolandHumanPoint"
+	cust_argv="poland"
+	type="AIMODEL"
+	model_file="HumanPoint_112_20230907.tflite"
+	run_device="GPU"
+	cpu_core="1"/>
+
+<module_config
+	name="MOD_HKResBlurDet"
+	type="AIMODEL"
+	model_file="blur_128_20230529.tflite"
+	run_device="GPU"
+	cpu_core="1"/>
+
+<module_config
+	name="BUS_HKResOneshotSceneProcess"
+	type="BUSINESS"/>
+
+<module_config
+	name="BUS_HKResOneshotRecFrame"
+	type="BUSINESS"/>
+
+<pipeline algoTag="app_oneshot_rec_frame">
+	<step 
+		value="0"
+		module_name="root" >
+		<setting data="ASYNC" format="BGR888" scalerate="1.0" angle="0"/>
+		<output output_module = "BUS_HKResOneshotRecPreFrame" />
+		<output output_module = "MOD_HKResPolandHumanPoint" />
+		<output output_module = "MOD_HKResBlurDet" do_action = "10"/>
+		<output output_module = "BUS_HKResOneshotSceneProcess" />
+		<output output_module = "BUS_HKResOneshotRecFrame" />
+	</step>
+
+	<step
+		value="1"
+		module_name="BUS_HKResOneshotRecPreFrame">
+		<condition output_module = "MOD_HKResPolandHumanPoint" threshold="0" format="INTEGER" operator="EQ_CHECK" />
+		<condition output_module = "BUS_HKResOneshotSceneProcess" threshold="1" format="INTEGER" operator="EQ_CHECK" />
+	</step>
+
+	<step
+		value="2"
+		module_name="MOD_HKResPolandHumanPoint">
+		<condition output_module = "BUS_HKResOneshotSceneProcess" threshold="0" format="INTEGER" operator="EQ_CHECK" />
+	</step>
+
+	<step
+		value="3"
+		module_name="MOD_HKResBlurDet">
+		<condition output_module = "BUS_HKResOneshotSceneProcess" threshold="0" format="INTEGER" operator="EQ_CHECK" />
+	</step>
+
+	<step
+		value="4"
+		module_name="BUS_HKResOneshotSceneProcess">
+		<condition output_module = "MOD_HKResBlurDet" threshold="0" format="INTEGER" operator="EQ_CHECK" />
+		<condition output_module = "BUS_HKResOneshotRecFrame" threshold="1" format="INTEGER" operator="EQ_CHECK" />
+	</step>
+
+	<step
+		value="5"
+		module_name="BUS_HKResOneshotRecFrame">
+	</step>
+
+</pipeline>
+</root>

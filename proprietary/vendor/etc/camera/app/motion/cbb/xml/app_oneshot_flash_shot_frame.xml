@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<module_config
+		name="MOD_HKResHumanBall3Det"
+		type="AIMODEL"
+		model_file="yolox_oneshot_256_20231007.tflite"
+		run_device="GPU"
+		cpu_core="1"/>
+
+	<module_config
+		name="BUS_HKResOneshotSelectHuman"
+		type="BUSINESS"/>
+
+	<module_config
+		name="MOD_HKResPolandHumanPoint"
+		cust_argv="poland_switch"
+		type="AIMODEL"
+		model_file="HumanPoint_112_20230907.tflite"
+		run_device="GPU"
+		cpu_core="1"/>
+
+	<module_config
+		name="BUS_HKResOneshotSelectFrame"
+		cust_argv="flashShot"
+		type="BUSINESS"/>
+
+	<pipeline algoTag="app_oneshot_flash_shot_frame">
+		<step
+			value="0"
+			module_name="root" >
+			<setting data="ASYNC" format="BGR888" scalerate="1.0" angle="0"/>
+			<output output_module = "MOD_HKResHumanBall3Det" do_action = "10"/>
+			<output output_module = "BUS_HKResOneshotSelectHuman" do_action = "10"/>
+			<output output_module = "MOD_HKResPolandHumanPoint" do_action = "10" />
+			<output output_module = "BUS_HKResOneshotSelectFrame" do_action = "10" />
+		</step>
+
+		<step
+			value="1"
+			module_name="MOD_HKResHumanBall3Det">
+			<output output_module = "BUS_HKResOneshotSelectHuman" />
+			<condition output_module = "BUS_HKResOneshotSelectFrame" do_action = "10" threshold="0" format="INTEGER" operator="EQ_CHECK" />
+		</step>
+
+		<step
+			value="2"
+			module_name="BUS_HKResOneshotSelectHuman">
+			<output output_module = "MOD_HKResPolandHumanPoint" />
+			<output output_module = "BUS_HKResOneshotSelectFrame" />
+		</step>
+
+		<step
+			value="3"
+			module_name="MOD_HKResPolandHumanPoint">
+			<output output_module = "BUS_HKResOneshotSelectFrame" />
+		</step>
+
+		<step
+			value="4"
+			module_name="BUS_HKResOneshotSelectFrame">
+		</step>
+	</pipeline>
+</root>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<module_config
+		name="MOD_HKResHumanBall3Det"
+		type="AIMODEL"
+		model_file="yolox_oneshot_320_20231007.tflite"
+		run_device="GPU"
+		cpu_core="1"/>
+
+	<module_config
+		name="BUS_HKResOneshotSelectHuman"
+		type="BUSINESS"/>
+
+	<module_config
+		name="MOD_HKResClassificationDet"
+		type="AIMODEL"
+		model_file="highlight_capture_96_0922.tflite"
+		run_device="GPU"
+		cpu_core="1"/>
+
+	<module_config
+		name="MOD_HKResFaceDet"
+		type="AIMODEL"
+		model_file="faceDetector_slim_256.tflite"
+		run_device="GPU"
+		cpu_core="1"/>
+
+	<module_config
+		name="MOD_HKResSmileDet"
+		type="AIMODEL"
+		model_file="smiling_133837.tflite"
+		run_device="GPU"
+		cpu_core="1"/>
+
+	<module_config
+		name="BUS_HKResOneshotSelectFrame"
+		type="BUSINESS"/>
+
+	<pipeline algoTag="app_ai_classification">
+		<step
+			value="0"
+			module_name="root" >
+			<setting data="ASYNC" format="BGR888" scalerate="1.0" angle="0"/>
+			<output output_module = "MOD_HKResHumanBall3Det" do_action = "10"/>
+			<output output_module = "BUS_HKResOneshotSelectHuman" do_action = "10"/>
+			<output output_module = "MOD_HKResClassificationDet" do_action = "10" />
+			<output output_module = "MOD_HKResFaceDet" do_action = "10" />
+			<output output_module = "MOD_HKResSmileDet" do_action = "10" />
+			<output output_module = "BUS_HKResOneshotSelectFrame" do_action = "10" />
+		</step>
+
+		<step
+			value="1"
+			module_name="MOD_HKResHumanBall3Det">
+			<output output_module = "BUS_HKResOneshotSelectHuman" />
+			<condition output_module = "BUS_HKResOneshotSelectFrame" do_action = "10" threshold="0" format="INTEGER" operator="EQ_CHECK" />
+		</step>
+
+		<step
+			value="2"
+			module_name="BUS_HKResOneshotSelectHuman">
+			<output output_module = "MOD_HKResClassificationDet" />
+			<output output_module = "MOD_HKResFaceDet" />
+			<output output_module = "BUS_HKResOneshotSelectFrame" />
+		</step>
+
+		<step
+			value="3"
+			module_name="MOD_HKResClassificationDet">
+			<output output_module = "BUS_HKResOneshotSelectFrame" />
+		</step>
+
+		<step
+			value="4"
+			module_name="MOD_HKResFaceDet">
+			<output output_module = "MOD_HKResSmileDet" do_action = "10" />
+			<condition output_module = "BUS_HKResOneshotSelectFrame" do_action = "10" threshold="0" format="INTEGER" operator="EQ_CHECK" />
+		</step>
+
+		<step
+			value="5"
+			module_name="MOD_HKResSmileDet">
+			<output output_module = "BUS_HKResOneshotSelectFrame" do_action = "10" />
+		</step>
+
+		<step
+			value="6"
+			module_name="BUS_HKResOneshotSelectFrame">
+		</step>
+	</pipeline>
+</root>

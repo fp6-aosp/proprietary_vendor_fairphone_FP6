@@ -1,0 +1,24 @@
+service tctd /vendor/bin/tctd
+    class core
+    group audio
+    socket tctd stream 0666 root root
+    group root system
+
+on post-fs
+    mkdir /mnt/vendor/persist/trace_info 0777 root system
+
+on property:ro.vendor.trace.btmac=*
+    setprop ro.vendor.bt.boot.macaddr ${ro.vendor.trace.btmac}
+
+service vendor.audio_tctd /vendor/bin/mm-audio-ftm -tc ${vendor.ftm.debug.audio.tc} -c ${vendor.ftm.debug.audio.config} -d 365 -v ${vendor.ftm.debug.audio.volume} 
+    user audio
+    group audio
+    disabled
+    oneshot
+
+service vendor.audio_tctd_path /vendor/bin/mm-audio-ftm -tc ${vendor.ftm.debug.audio.tc} -file ${vendor.ftm.debug.audio.path} -c ${vendor.ftm.debug.audio.config} -d ${vendor.ftm.debug.audio.time} -v ${vendor.ftm.debug.audio.volume} 
+    user root
+    group root diag everybody external_storage sdcard_rw sdcard_r media_rw reserved_disk graphics system oem_2901
+    disabled
+    oneshot
+

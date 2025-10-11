@@ -1,0 +1,25 @@
+customTOFSensorLib=/vendor/lib64/hw/sensors.vl53l1.so
+enableTOFInterface=TRUE
+
+#for insensorzoom by jwei
+perFrameSensorMode=TRUE
+
+SensorTypeTof=0
+enableOISOptimization=FALSE
+tintlessEnable=TRUE
+NumPCRsBeforeStreamOn=1
+#enableTuningMetadata=TRUE
+#enable3ADebugData=TRUE
+#enableSwHME=FALSE
+EISv3DisableOIS=FALSE
+EISv2DisableOIS=FALSE
+EisOisMode=1
+enableVIULLProcessing=FALSE
+enableHealthMonitor=FALSE
+enableSignal35Tombstone=FALSE
+disablePreProcessedOutputPorts==FALSE
+enableDynamicModeSwitchVCUpdate=TRUE
+sessionResponseTimePadding=100
+logWarningMask=0
+chiLogWarningMask=0
+logRequestMapping=FALSE
