@@ -21784,34 +21784,6 @@ cc_prebuilt_library_shared {
 }
 
 cc_prebuilt_library_shared {
-    name: "vendor.qti.hardware.fingerprint@1.0",
-    owner: "fairphone",
-    strip: {
-        none: true,
-    },
-    target: {
-        android_arm64: {
-            srcs: [
-                "proprietary/vendor/lib64/vendor.qti.hardware.fingerprint@1.0.so",
-            ],
-            shared_libs: [
-                "libhidlbase",
-                "liblog",
-                "libutils",
-                "libcutils",
-                "libc++",
-                "libc",
-                "libm",
-                "libdl",
-            ],
-        },
-    },
-    compile_multilib: "64",
-    prefer: true,
-    soc_specific: true,
-}
-
-cc_prebuilt_library_shared {
     name: "vendor.qti.hardware.fm@1.0",
     owner: "fairphone",
     strip: {
@@ -24940,15 +24912,6 @@ prebuilt_etc_xml {
 }
 
 prebuilt_etc_xml {
-    name: "fingerprint-FP6.xml",
-    owner: "fairphone",
-    src: "proprietary/vendor/etc/vintf/manifest/fingerprint-FP6.xml",
-    filename_from_src: true,
-    sub_dir: "vintf/manifest",
-    soc_specific: true,
-}
-
-prebuilt_etc_xml {
     name: "imsdcservice-saidl.xml",
     owner: "fairphone",
     src: "proprietary/vendor/etc/vintf/manifest/imsdcservice-saidl.xml",
@@ -25542,39 +25505,6 @@ cc_prebuilt_binary {
         none: true,
     },
     prefer: true,
-    soc_specific: true,
-}
-
-cc_prebuilt_binary {
-    name: "android.hardware.biometrics.fingerprint-service",
-    owner: "fairphone",
-    target: {
-        android_arm64: {
-            srcs: [
-                "proprietary/vendor/bin/hw/android.hardware.biometrics.fingerprint-service",
-            ],
-            shared_libs: [
-                "libbase",
-                "libbinder_ndk",
-                "libhardware",
-                "libcutils",
-                "liblog",
-                "libutils",
-                "android.hardware.biometrics.fingerprint-V3-ndk",
-                "android.hardware.biometrics.common-V3-ndk",
-                "libc++",
-                "libc",
-                "libm",
-                "libdl",
-            ],
-        },
-    },
-    compile_multilib: "64",
-    strip: {
-        none: true,
-    },
-    prefer: true,
-    relative_install_path: "hw",
     soc_specific: true,
 }
 
